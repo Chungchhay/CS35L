@@ -1,0 +1,65 @@
+What we have to do first in the lab is to form a group. My partner worked as a server.
+In this lab, we want to use ubuntu by using a disc that was provided in the lab. 
+I first started to restart the computer and press F2 multiple times until it shows
+something on the screen, and I put the CD in the computer and pressed exit. Then 
+pressed try ubuntu. Now I had ubuntu set up in my computer.
+
+In order to be a client or server, we had to install the package. To install the pakacge
+we ran the following commands:
+dpkg --get-selections | grep openssh
+sudo apt-get purge openssh-client
+sudo apt-get update
+
+Notice that we missed some packages on the server. We then ran the following command 
+sudo apt-get install openssh-server 
+sudo apt-get install openssh-client
+
+I act as a server by setting up a public and  private key ssh-keygen. I set no keyword in it.
+This command is basically a RSA key for ssh for someone who tries to log in into my server. 
+
+sudo useradd -d /home/<UserFolder> -m myUser
+
+This command is to create a folder named UserFolder and add the user with a user name myUser. 
+
+sudo passwd <myUser>
+
+This creates password the my user name myUser
+
+cd /home/<UserFolder>
+
+I entered my user folder to create a ssh directory  to store all the information in the
+public and private key. 
+
+sudo mkdir .ssh
+
+I then continued to make the the owner myUser so my user can log in into the server. And they 
+can add and modify file that they want in that directory by doing the following commands
+sudo chown -R <myUser> .ssh
+sudo chmod 700 .ssh 
+
+We grab the IP address to log into my server. 
+
+ifconfig 
+
+After my partner logged in, we test it out by creating files on each other computer
+and check to see what we both see. And it worked. 
+
+Done with server.
+
+For client:
+Now I act as a client. After my partner finished setting up his server, we then grabbed the
+IP address by using ifconfig command.
+I started to work as a client by the following command:
+
+ssh-copy-id -i myUser@164-67-127-163
+ssh-add
+
+This will add a private key to the server within the ssh folder. 
+
+ssh myUser@164-67-127-163 
+ssh _X myUser@164-67-127-163
+
+add a file to the server to see if we can see it. Then log in to open other programs such as 
+Firefox.  
+
+

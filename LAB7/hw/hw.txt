@@ -1,0 +1,29 @@
+1. If other teams really had been observing all the bytes going across the network,
+my result is still secure because we use public and private key. When we send 
+the datas to the user, the datas will be encrypted and can only be decrypted by 
+the user private key which is not avaible on the network. So other teams will have
+no idea how to decrypte the datas we are sending. so the data is secured. 
+
+Assumed the other teams had also tapped my keyboards and had observed all of my
+team's keystrokes, then the datas is no longer secure because they will have access
+to the private key (passphrase) that we have created. So they know how to decrypte our 
+datas from the passphrase they got from observing our keystrokes. 
+
+I am booting off USB and I assume the other teams temporarily had physical control of
+the USB. Then again my datas are not secured because they can have access to the root
+of the boot which will give them accessing to the .ssh folder which give them access 
+to the public and private keys that is used to encrypte decrypte the datas. 
+
+2
+gpg --verify command does not really verify the original sender of the file because all 
+it does is to compare the decrypted datas using a public key with its signature. From the sender, 
+they generate a message digest using hash algorithms and encrypted using private key. It is 
+also attached with a signature. From the receiver, they decrypted the datas using public key
+and generate message digest using hash algorithms then it compares the decrypted the datas using 
+public key with its signature. What if when the datas on its way to the receiver, someone tries
+to change it, so gpg --verify will simply used the decrypted public key to compare with its 
+signature which will tell the receiver that it is not original datas from the original sender. 
+ 
+A solution to this problem nowadays is to trust a well organized third party company 
+that will secure our datas and key track of the original file with its author. Trusting
+the organized third party company the verification will always be correct. 
