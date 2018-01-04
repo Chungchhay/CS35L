@@ -1,0 +1,127 @@
+First I started off by log in into the server. 
+Created a file name lab.txt. And wrote another 2 files using C programming language
+for tr2b.c and tr2u.c
+
+The purpose of creating those 2 files is because we want to compare the timing one 
+using buffer (tr2b.c) and the other one does not use buffer (tr2u.c). The one
+uses buffer need to use C library in order to use getchar() and putchar() functions,
+while tr2u.c uses only read() and write(). 
+
+3. I used strace command to compare the system calls between those 2 functions 
+I first started off by creating a file that is 5MB defined by the spec by doing 
+this command:
+dd if=/dev/urandom of=bigFile.txt bs=1M count=5
+a. 
+copy one file to another. And run the command 
+strace -c ./tr2b 'a' 'x' < bigFile.txt > output_tr2b
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 30.38    0.000048          24         2           read
+ 20.89    0.000033           4         9           mmap
+ 10.76    0.000017           4         4           mprotect
+  8.23    0.000013          13         1           write
+  6.96    0.000011           3         4           fstat
+  6.33    0.000010           5         2           open
+  5.06    0.000008           8         1           munmap
+  3.16    0.000005           5         1         1 access
+  3.16    0.000005           5         1           execve
+  1.90    0.000003           2         2           close
+  1.90    0.000003           3         1           brk
+  1.27    0.000002           2         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.000158                    29         1 total
+
+We see that system call have been called 29 made from the output file we put
+the strace output into. 
+
+Then strace -c ./tr2u 'a' 'x' < bigFile.txt > output_tr2u
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 55.23    5.904494           1   5242880           write
+ 44.77    4.786555           1   5242882           read
+  0.00    0.000037           5         7           mmap
+  0.00    0.000024           6         4           mprotect
+  0.00    0.000014           7         2           open
+  0.00    0.000010          10         1           munmap
+  0.00    0.000008           8         1         1 access
+  0.00    0.000007           4         2           close
+  0.00    0.000007           4         2           fstat
+  0.00    0.000007           7         1           execve
+  0.00    0.000004           4         1           brk
+  0.00    0.000004           4         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00   10.691171              10485784         1 total
+
+10485784 systemcalls have been called since it did not use buffer that's why 
+it needed to call systemcalls more than the one use buffer (tr2b). 
+And obviously the one with more systemcalls is slower than the one uses buffer. 
+
+b. copy one file to the terminal
+strace -c ./tr2b 'a' 'x' < bigFile.txt
+
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 60.00    0.000006           6         1           execve
+ 40.00    0.000004           4         1           brk
+  0.00    0.000000           0         2           read
+  0.00    0.000000           0         2           write
+  0.00    0.000000           0         2           open
+  0.00    0.000000           0         2           close
+  0.00    0.000000           0         4           fstat
+  0.00    0.000000           0         9           mmap
+  0.00    0.000000           0         4           mprotect
+  0.00    0.000000           0         1           munmap
+  0.00    0.000000           0         1         1 access
+  0.00    0.000000           0         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.000010                    30         1 total
+
+strace -c ./tr2u 'a' 'x' < bigFile.txt
+
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 58.88    7.017288           1   5242880           write
+ 41.11    4.899599           1   5242882           read
+  0.00    0.000037           5         7           mmap
+  0.00    0.000026           7         4           mprotect
+  0.00    0.000013           7         2           open
+  0.00    0.000010          10         1           munmap
+  0.00    0.000007           4         2           fstat
+  0.00    0.000007           7         1         1 access
+  0.00    0.000006           3         2           close
+  0.00    0.000006           6         1           execve
+  0.00    0.000004           4         1           brk
+  0.00    0.000003           3         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00   11.917006              10485784         1 total
+
+Again the buffer one call systemcalls way less than unbuffered one
+and take much less time than unbuffered one. 
+
+4. Test time
+copy one file to the other
+time ./tr2b 'abc' 'xyz' < bigFile.txt > output_tr2b
+real 0m0.003s
+user 0m0.000s
+sys  0m0.002s
+
+time ./tr2u 'abc' 'xyz' < bigFile.txt > output_tr2u
+real 0m7.280s
+user 0m0.375s
+sys  0m6.855s
+
+copy one file to terminal
+time ./tr2b 'abc' 'xyz' < bigFile.txt
+real 0m0.002s
+user 0m0.000s
+sys  0m0.001s
+
+time ./tr2u 'abc' 'xyz' < bigFile.txt
+real 0m5.998s
+user 0m0.367s
+sys  0m5.599s
+
+In conclusion, getchar() and putchar() are much faster than read() and write()
+functions because getchar() and putchar() use buffer and call systemcalls less
+than read() and write().
+

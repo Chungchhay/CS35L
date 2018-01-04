@@ -1,0 +1,72 @@
+After finishing sfrobu.c, I compared time for sfrob, sfrobu, sfrobs, sfrobu -f, 
+and sfrobs -f
+Note that in sfrobs, I used octal as my ASCII character.
+ 
+By testing the time of sfrobu, I did
+printf '*~BO *{_CIA *hXE]D *LER #@_GZY #E\\OX #^BO #FKPS #NEM\4' |./sfrobu |od -ta
+result 
+0000000   *   h   X   E   ]   D  sp   *   {   _   C   I   A  sp   *   ~
+0000020   B   O  sp   *   L   E   R  sp   #   N   E   M eot  sp   #   @
+0000040   _   G   Z   Y  sp   #   F   K   P   S  sp   #   E   \   O   X
+0000060  sp   #   ^   B   O  sp
+0000066
+
+time ./sfrobu <bigFile.txt> newFile
+real	0m0.128s
+user	0m0.057s
+sys	0m0.025s
+
+By testing the time of sfrob, I did
+printf '*~BO *{_CIA *hXE]D *LER #@_GZY #E\\OX #^BO #FKPS #NEM\4' |./sfrob |od -ta
+result 
+0000000   *   h   X   E   ]   D  sp   *   {   _   C   I   A  sp   *   ~
+0000020   B   O  sp   *   L   E   R  sp   #   N   E   M eot  sp   #   @
+0000040   _   G   Z   Y  sp   #   F   K   P   S  sp   #   E   \   O   X
+0000060  sp   #   ^   B   O  sp
+0000066
+
+time ./sfrob <bigFile.txt> newFile
+real	0m0.003s
+user	0m0.000s
+sys	0m0.002s
+
+By testing the time of sfrobs, I did 
+printf '*~BO *{_CIA *hXE]D *LER #@_GZY #E\\OX #^BO #FKPS #NEM\4' |./sfrobs |od -ta
+
+result
+0000000   *   h   X   E   ]   D  sp   *   {   _   C   I   A  sp   *   ~
+0000020   B   O  sp   *   L   E   R  sp   #   N   E   M eot  sp   #   @
+0000040   _   G   Z   Y  sp   #   F   K   P   S  sp   #   E   \   O   X
+0000060  sp   #   ^   B   O  sp
+0000066
+
+real	0m0.081s
+user	0m0.032s
+sys	0m0.015s
+
+By testing the time of sfrobu -f, I did
+printf '*~BO *{_CIA *hXE]D *LER #@_GZY #E\\OX #^BO #FKPS #NEM\4' |./sfrobu -f |od -ta
+0000000   *   h   X   E   ]   D  sp   *   L   E   R  sp   *   {   _   C
+0000020   I   A  sp   *   ~   B   O  sp   #   N   E   M eot  sp   #   @
+0000040   _   G   Z   Y  sp   #   F   K   P   S  sp   #   E   \   O   X
+0000060  sp   #   ^   B   O  sp
+0000066
+
+time ./sfrobu -f  <bigFile.txt> newFile
+real	0m0.135s
+user	0m0.060s
+sys	0m0.029s
+
+By testing the time of sfrobs -f, I did
+printf '*~BO *{_CIA *hXE]D *LER #@_GZY #E\\OX #^BO #FKPS #NEM\4' |./sfrobs -f |od -ta
+0000000   *   h   X   E   ]   D  sp   *   L   E   R  sp   *   {   _   C
+0000020   I   A  sp   *   ~   B   O  sp   #   N   E   M eot  sp   #   @
+0000040   _   G   Z   Y  sp   #   F   K   P   S  sp   #   E   \   O   X
+0000060  sp   #   ^   B   O  sp
+0000066
+
+real	0m0.080s
+user	0m0.020s
+sys	0m0.026s
+
+In conclusion, we see that the more we call systemcall, the more time it is consuming. 
