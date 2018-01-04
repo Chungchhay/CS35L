@@ -1,0 +1,27 @@
+1. Because the line is repeating twice, and it is a goto statement in
+a switch statement. Since it is a part of switch statement, it was not 
+necessary to remove it. The compiler will ignore it since nothing uses 
+this label. 
+
+2. If I use this patched version of Coreutils instead of the default one, I 
+might want to watch out about the clients in other countries that 
+does not speak English because of the month, our new patch had it in 
+alphabets instead of numbers. And it would cause inconsistance in other 
+programs that display dates in different format.
+
+3. When running ./randline.py -n 5 /dev/null, the output gives me an error 
+ "IndexError: list index out of range". Since I basically try to access
+ empty file. The randline.py tries to read from the files, so it assumes
+ that the files has something in it, but instead it will access to the null
+ file that causes an error.
+
+4.Run randline.py under python3 gives us:
+  File "randline.py", line 65
+    except IOError as (errno, strerror):
+                      ^
+SyntaxError: invalid syntax
+In python3 IOError is combined into OSError, and the corresponding 
+arguments changed. 
+The correct way to do it:
+except OSError as err:
+       parser.error("OS error: {0}".format(err))

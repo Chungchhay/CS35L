@@ -1,0 +1,119 @@
+1. I started log in into my seas net account. Then I downloaded the
+ Coreutils 7.6 package using wget command.
+wget ftp://ftp.gnu.org/gnu/coreutils/coreutils-7.6.tar.gz.
+
+2. Then unzip the file using tar command. tar -zxvf coreutils-7.6.tar.gz
+I then compiled the copy of coreutils-7.6 into a CoreutilsInstall directory
+with the following command
+ ./configure --prefix=/u/cs/ugrad/chungchh/LAB3/LAB3/CoreutilsInstall
+And then installed it by using make command. make then  make install 
+
+3. Cheked locale to see if it is 'en_US.UTF-8' or not. If not, do 
+export LC_ALL='en_US.UTF-8' I went to CoreutilsInstall and bin and used 
+ls command to see all the broken ls in the bin.
+
+4. I copied and pasted Brady's patch into a new file called patch.txt in my 
+coreutils-7.6 directory. I then did patch -p1 < patch.txt and noticed that 
+it said it was successful.
+
+5. I then ran the make command. Now I see that ./ls -l in my 
+coreutils-7.6/src/ directory follow month-day-year/hour instead of
+year-month-day. Noticed that there are fewer files being compile 
+compared to the original make command. Fewer Entering and leaving
+commands. Below is the output I got after applying the patch.
+
+ make  all-recursive
+make[1]: Entering directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6'
+Making all in lib
+make[2]: Entering directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/lib'
+make  all-recursive
+make[3]: Entering directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/lib'
+make[4]: Entering directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/lib'
+make[4]: Leaving directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/lib'
+make[3]: Leaving directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/lib'
+make[2]: Leaving directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/lib'
+Making all in src
+make[2]: Entering directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/src'
+make  all-am
+make[3]: Entering directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/src'
+make[3]: Nothing to be done for `all-am'.
+make[3]: Leaving directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/src'
+make[2]: Leaving directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/src'
+Making all in doc
+make[2]: Entering directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/doc'
+make[2]: Nothing to be done for `all'.
+make[2]: Leaving directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/doc'
+Making all in man
+make[2]: Entering directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/man'
+make[2]: Nothing to be done for `all'.
+make[2]: Leaving directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/man'
+Making all in po
+make[2]: Entering directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/po'
+make[2]: Nothing to be done for `all'.
+make[2]: Leaving directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/po'
+Making all in tests
+make[2]: Entering directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/tests'
+make[2]: Nothing to be done for `all'.
+make[2]: Leaving directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/tests'
+Making all in gnulib-tests
+make[2]: Entering directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/gnulib-tests'
+make  all-recursive
+make[3]: Entering directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/gnulib-tests'
+make[4]: Entering directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/gnulib-tests'
+make[4]: Nothing to be done for `all-am'.
+make[4]: Leaving directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/gnulib-tests'
+make[3]: Leaving directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/gnulib-tests'
+make[2]: Leaving directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6/gnulib-tests'
+make[2]: Entering directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6'
+make[2]: Nothing to be done for `all-am'.
+make[2]: Leaving directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6'
+make[1]: Leaving directory
+ `/w/home.17/cs/ugrad/chungchh/LAB3/LAB3/coreutils-7.6' 
+
+The make all-recursive command checks all the relavant directories within
+the current location (coreutils-7.6) to see there was any change in the
+relevant sour files after the patch
+
+After applying patch, we will have the broken version in the
+coretutilsInstall/bin  of ls and the fixed version in the coreutils-7.6/src. 
+
+6. Unmodified version by going to the ~/CoreutilsInstall/bin/
+-rwxr-xr-x 1 chungchh csugrad 127256 2017-01-27 15:09
+
+   fixed version by going to ~/coreutils-7.6/src
+-rwxr-xr-x 1 chungchh csugrad 127256 Jan 27 15:08
+
+at least a year ago by doing touch -t 8901241220 yearsAgo
+
+Unmodified version 
+ -rw-r--r-- 1 chungchh csugrad      0 1989-01-24 12:20
+
+fixed version 
+-rw-r--r-- 1 chungchh csugrad      0 Jan 24  1989
