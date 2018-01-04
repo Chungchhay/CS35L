@@ -1,0 +1,123 @@
+Name: Chungchhay Kuoch
+
+UID:  004 843 308
+
+Email: Chungchhaykuoch@yahoo.com
+
+TA: Thuy Vu
+
+Prof: Eggert
+
+File: lab2.log
+
+1. I first have to signed with Seas Account. Then run
+ locale command and noticed that it showed me
+ LC_CTYPE="en_US.UTF-8" so I had to run
+ export LC_ALL='C' in order to output LC_CTYPE="C"
+
+2. I ran a command sort /usr/share/dict/words > words to store the
+ sorted contents of /usr/share/dict/words in my current file words.
+
+3. I downloaded the webpage page using wget
+ http://web.cs.ucla.edu/classes/winter17/cs35L/assign/assign2.html.
+ Noticed there was a file called assign2.html. I renamed it as
+ assign2.txt by using mv command: mv assign2.html assign2.txt
+
+4. I then run cat assign2.txt | those commands with the following:
+
+cat assign2.txt | tr -c 'A-Za-z' '[\n*]' which is basically output
+ each word with a new line starting with characters A-Z and a-z, 
+and also replaces non-alphabet chars(in this case is a space) with 
+new lines.cat assign2.txt | tr -cs 'A-Za-z' '[\n*]' output each word
+ with a new line starting with characters A-Z and a-z, and without
+ replacing non-alphabet chars with new lines since there is an option
+ called -s means "squeezes"
+
+cat assign2.txt | tr -cs 'A-Za-z' '[\n*]' | sort output all the words
+ in alphabetically sorted order, each word with a new line
+
+cat assign2.txt | tr -cs 'A-Za-z' '[\n*]' | sort -u output all the
+ words in alphabetically sorted order, each word with a new line with
+ words unique(one word outputs only once without repeating)
+
+cat assign2.txt | tr -cs 'A-Za-z' '[\n*]' | sort -u | comm - words
+There are 3 columns in this output
+1st column is to output words unique and sorted of assign2.txt
+2nd column is to output words unique and sorted of the file words
+3rd column is to output words unique and sorted  that appear in both 
+files assign2.txt and words
+
+cat assign2.txt | tr -cs 'A-Za-z' '[\n*]' | sort -u | comm -23 - words
+This output the first column of the previous one. Words that are 
+unique to assign2.txt
+
+5. I downloaded the webpage using wget
+ http://mauimapp.com/moolelo/hwnwdseng.htm and noticed that there is
+ a file called hwnwdseng.htm since I just downloaded it. I then copied
+ the contents of hwnwdseng.htm to hwords file by using the command cp
+ hwnwdseng.htm hwords
+
+6. 
+#get whatever words that start from <td> and end with  </td>" with 1
+ or more character 
+grep "<td>.\{1,\}</td>"
+
+#make uppercase to lowercase and ` to '
+tr "A-Z\`" "a-z\'"
+
+#delete the odd lines and keep the even lines
+sed -n 'g;n;p'
+
+#remove all lines having html tag
+sed "s/<[^>]*>//g"
+
+#replace , and a new line globally
+sed 's/, /\n/g'
+
+#replace a space with a new line globally
+sed 's/ /\n/g' 
+
+#get only hawaiian words starting with their alphabet
+grep "[pk\'mnwlhaeiou]"
+
+#sort all the words without duplicate
+sort -u
+
+change the permission of buildwords for the executable:
+ chmod u+x buildwords
+Run: cat hwnwdseng.htm | ./buildwords > hwords
+
+7. I then downloaded the webpage using wget
+ http://web.cs.ucla.edu/classes/winter17/cs35L/assign/assign2.html 
+and noticed that there was a file called assign2.html
+
+cat assign2.html | tr "PKMNWLHAEIOU" "pkmnwlhaeiou" |
+ tr -cs "pk\'mnwlhaeiou" '[\n*]' | sort -u | comm -23 - hwords | wc -l
+198
+Run the command above, I got 198 words count that are misspelled in
+ English words. The command above means read assign2.html, make all
+ uppercases to lowercases, output each word in a new line starting
+ with pk\'mnwlhaeiou and sorted those words removing duplicates and 
+then compare assign2.html with hwords dictionary to see the number
+ of misspelled words in English.
+
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]' |
+ sort -u | comm -23 - words | wc -l
+81
+
+Run the command above, I got 81 words count that are misspelled in
+ Hawaiian words. The command above means read assign2.html, output
+ each word in a new line starting from A-Z or a-z and sorted those
+ words removing duplicates and then compare assign2.html with words
+ to see the number of misspelled words in Hawaiian.  
+
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | tr '[:upper:]' '[:lower:]'
+ | sort -u | comm -23 - words | comm -12 - hwords
+halau
+lau
+wiki
+Misspelled English but not Hawaiian 
+
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | tr '[:upper:]' '[:lower:]' 
+| sort -u | comm -23 - hwords | comm -12 - words | wc -l
+There are 370 words misspelled in Hawaiian but not English
