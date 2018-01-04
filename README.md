@@ -1,2 +1,2 @@
 # CS35L
-Software Construction Laboratory
+Software Construction Laboratory winter 2017
