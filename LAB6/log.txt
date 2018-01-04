@@ -1,0 +1,53 @@
+As usual, I first started to log on my Seasnet account. 
+
+First, I had to check the version if it is 8.26 or not.
+By checking the version, I did sort --version command.
+I saw that I had 8.22 version instead of 8.26.
+I ran export PATH=/usr/local/cs/bin:$PATH command.
+Now I got 8.26 version. 
+
+I began to generate a file containing 10,000,000 random sigle-precision
+floating point numbers with no white space. I did this using od command with 
+-An and -fN for floating point. Since it is single-precision floating point
+I did -fN 40000000 for 10,000,000 numbers where -fN is for floating point and 
+Each single-precision floating-point is 4 bytes. 
+I used sed 's/^[0-3]* *//' to remove the octal numbers.
+And tr ' ' '\n' and tr -s ' ' commands to make a new line and without a white space. 
+
+od -An -fN 40000000 < /dev/urandom | sed 's/^[0-3]* *//'| tr '\n' ' ' | tr -s ' ' | tr ' ' '\n' > fileName
+
+I put the output into my fileName file
+
+I then began to compare the time with the following
+
+time -p sort -g fileName > /dev/null
+real 21.72
+user 112.44
+sys 0.52
+
+time -p sort -g --parallel=1 fileName > /dev/null
+real 102.36
+user 102.15
+sys 0.19
+
+time -p sort -g --parallel=2 fileName > /dev/null 
+real 55.34
+user 105.71
+sys 0.23
+
+time -p sort -g --parallel=4 fileName > /dev/null
+real 32.71
+user 110.04
+sys 0.34
+
+time -p sort -g --parallel=8 fileName > /dev/null
+real 20.57
+user 112.73
+sys 0.45
+
+I see that the general sort and the sort prallel=8 has about the same in real time
+while others are slowers. I noticed that the system call keeps increasing as 
+the number of threads increase because the more threads the more system call. 
+I believe that the default 8.7 or higher version is multi-threaded to the max. number
+of processors but capped at 8. That is why general sort and 8-threaded sort have similiar
+run time.
