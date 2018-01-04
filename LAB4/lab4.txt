@@ -1,0 +1,115 @@
+I first started off downloading coreutils version by using wget command. 
+wget http://web.cs.ucla.edu/classes/winter17/cs35L/assign/
+coreutils-with-bug.tar.gz
+Then unzipped it using tar command.
+tar -zxvf coreutils-with-bug.tar.gz
+I then ran ./configure command in coreutils-with-bug directory,
+and make command, it showed me an error saying "error: conflicting types 
+for 'futimens'" So I should fix this bug. 
+
+I download another link 
+wget http://web.cs.ucla.edu/classes/winter17/cs35L/assign/coreutils.diff
+
+I moved coreutils.diff into coreutils-with-bug. I patched it by doing
+patch -p0 < coreutils.diff. And ended up with patch these files 
+patching file lib/utimens.c
+patching file lib/utimens.h
+patching file src/copy.c
+patching file src/tee.c
+patching file src/touch.c
+
+make command, and noticed that there was no error since patch fixed the bug.
+
+Then I went back to lab4 directory to create a temporary directory.
+In the temporary directory, I copied commands from the following:
+$ tmp=$(mktemp -d)
+$ cd $tmp
+$ touch -d '1918-11-11 11:00 GMT' wwi-armistice
+$ touch now
+$ sleep 1
+$ touch now1
+$ TZ=UTC0 ~/LAB4/lab/coreutils-with-bug/src/ls -lt --full-time wwi-armistice now now1
+
+Then realized that the date is different order
+-rw-r--r-- 1 chungchh csugrad 0 1918-11-11 11:00:00.000000000 +0000 wwi-armistice
+-rw-r--r-- 1 chungchh csugrad 0 2017-02-09 08:32:20.328999892 +0000 now1
+-rw-r--r-- 1 chungchh csugrad 0 2017-02-09 08:32:12.095779752 +0000 now
+
+The wwi-armistice should be at the third one instead of first one. 
+
+I then went back to coreutils-with-bug/src/ls.c to fix the bug is this file.
+To fix the bug, I went to coreutils-with-bug/src directory, and did gdb ls.
+Notice that the function called compare_mtime is somehow the place that we 
+should look at. I then did
+
+(gdb) break compare_mtime
+(gdb) list
+(gdb) si
+
+Got into compare_mtime took me to timespec.h function
+timespec_cmp (struct timespec a, struct timespec b)
+{
+    int diff = a.tv_sec - b.tv_sec;
+    return diff ? diff : a.tv_nsec - b.tv_nsec;
+}
+
+
+I copied timespec.h function to a timespecNew.h function
+and replace the contents in timespecNew.h 
+timespec_cmp (struct timespec a, struct timespec b)
+{
+  if (a.tv_sec > b.tv_sec) {
+    return 1;
+  } else if (a.tv_sec < b.tv_sec) {
+    return -1;
+  } else {
+    return 0;
+  }
+} 
+
+I created lab4.diff in the coreutils-with-bug/lib directory 
+by doing the following command 
+diff -u timespec.h timespecNew.h > lab4.diff
+
+I went to ChangeLog to add
+
+2017-02-10  Chungchhay Kuoch  <chungchh@lnxsrv07.seas.ucla.edu>
+
+        * lib/timespec.h (timespec_cmp):
+cp ChangeLog lab4.diff
+cat patch.diff >> lab4.diff
+
+Then I patched it by using the following command 
+patch -p0 < lab4.diff
+patching file timespec.h
+
+make 
+
+Then I went to my temporary directory again to run 
+$ tmp=$(mktemp -d)
+$ cd $tmp
+$ touch -d '1918-11-11 11:00 GMT' wwi-armistice
+$ touch now
+$ sleep 1
+$ touch now1
+$ TZ=UTC0 ~/LAB4/lab/coreutils-with-bug/src/ls -lt --full-time wwi-armistice now now1
+-rw-r--r-- 1 chungchh csugrad 0 2017-02-11 00:57:58.647232672 +0000 now1
+-rw-r--r-- 1 chungchh csugrad 0 2017-02-11 00:57:51.383038161 +0000 now
+-rw-r--r-- 1 chungchh csugrad 0 1918-11-11 11:00:00.000000000 +0000 wwi-armistice
+
+Now it is in the right order. 
+
+To test the Seasnet Linux server
+I went to home cd ~
+$ touch -d '1918-11-11 11:00 GMT' wwi-armistice
+$ touch now
+$ touch now1
+$ TZ=UTC0 ls -lt --full-time wwi-armistice now now1
+-rw-r--r-- 1 chungchh csugrad 0 2054-12-17 17:28:16.000000000 +0000 wwi-armistice
+-rw-r--r-- 1 chungchh csugrad 0 2017-02-11 01:03:07.236083000 +0000 now1
+-rw-r--r-- 1 chungchh csugrad 0 2017-02-11 01:03:04.126794000 +0000 now
+
+The server does not recognize the previous time since it was long time ago. The reason why it 
+showed 2054 instead of 1918 is because seasnet server is using 32 bits system, which 1918 
+is out of bound. If they were to use 64 bits system instead of 32 bits system, it will show
+1918. 
